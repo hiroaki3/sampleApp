@@ -1,16 +1,35 @@
 import { Component } from '@angular/core';
-import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
+import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/database';
 
 @Component({
   selector: 'app-root',
-  templateUrl: 'app.component.html',
-  styleUrls: ['app.component.css']
+  template: `
+  <h1> : {{ (item | async)?.name }} : </h1>
+  <h1>{{ item | async | json }}</h1>
+  <input type="text" #newname placeholder="Name" />
+  <input type="text" #newsize placeholder="Size" />
+  <br />
+  <button (click)="save(newName.value)">Set Name</button>
+  <button (click)="update(newsize.value)">Update Size</button>
+  <button (click)="delete()">Delete</button>
+  `, 
+  //templateUrl: 'app.component.html',
+  //styleUrls: ['app.component.css']
 })
 export class AppComponent {
   title = 'sampleApp';
-  items: FirebaseListObservable<any[]>;
+  item: FirebaseObjectObservable<any>;
   constructor(db: AngularFireDatabase) {
-    this.items = db.list('/items');
+    this.item = db.object('/item');
+  }
+  save(newName: string) {
+    this.item.set({ name: newName });
+  }
+  update(newSize: string) {
+    this.item.update({ size: newSize });
+  }
+  delete() {
+    this.item.remove();
   }
 }
 
