@@ -3,7 +3,7 @@ import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/data
 
 @Component({
   selector: 'app-root',
-  template: `
+  /*template: `
   <h1> : {{ (item | async)?.name }} : </h1>
   <h1>{{ item | async | json }}</h1>
   <input type="text" #newname placeholder="Name" />
@@ -12,10 +12,11 @@ import { AngularFireDatabase, FirebaseObjectObservable } from 'angularfire2/data
   <button (click)="save(newName.value)">Set Name</button>
   <button (click)="update(newsize.value)">Update Size</button>
   <button (click)="delete()">Delete</button>
-  `, 
-  //templateUrl: 'app.component.html',
-  //styleUrls: ['app.component.css']
+  `,*/ 
+  templateUrl: 'app.component.html',
+  styleUrls: ['app.component.css']
 })
+
 export class AppComponent {
   title = 'sampleApp';
   item: FirebaseObjectObservable<any>;
@@ -23,13 +24,22 @@ export class AppComponent {
     this.item = db.object('/item');
   }
   save(newName: string) {
-    this.item.set({ name: newName });
+    const promise = this.item.set({ name: newName });
+    promise
+    .then(_ => console.log('success'))
+    .catch(err => console.log(err,'You dont have access!'));
   }
   update(newSize: string) {
-    this.item.update({ size: newSize });
-  }
+    const promise = this.item.update({ size: newSize });
+    promise
+    .then(_ => console.log('success'))
+    .catch(err => console.log(err,'You dont have access!'));
+  } 
   delete() {
-    this.item.remove();
+    const promise = this.item.remove();
+    promise
+      .then(_ => console.info('success'))
+      .catch(err => console.info(err,'You dont have access!'));
   }
 }
 
